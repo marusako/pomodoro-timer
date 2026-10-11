@@ -19,6 +19,9 @@ import { createWheelPicker } from './wheel-picker.js';
 import { WALLPAPER_PRESETS } from './wallpapers.js';
 import { mediaUrl } from './media-rules.js';
 import { NOISE_TYPES } from './noise.js';
+import { AMBIENT_TYPES } from './ambience.js';
+// BGM の選択肢に並べる、アプリの中で作る音 (ノイズのあとに環境音)。保存の形はどちらも 'noise:<種類>'
+const SYNTH_TYPES = [...NOISE_TYPES, ...AMBIENT_TYPES];
 import { ALARM_SOUNDS } from './alarms.js';
 import { SE_SOUNDS } from './se-sounds.js';
 import { TIMER_FONTS, timerFont } from './fonts.js';
@@ -780,7 +783,7 @@ function renderSeList() {
 
 function renderBgmList() {
   const items = [choiceButton(t('none'), 'bgm', 'none')];
-  for (const type of NOISE_TYPES) items.push(choiceButton(t(`noise.${type}`), 'bgm', `noise:${type}`));
+  for (const type of SYNTH_TYPES) items.push(choiceButton(t(`noise.${type}`), 'bgm', `noise:${type}`));
   // 取り込んだ曲は、多くなったら枠の中でスクロールする (なし・ノイズ・取り込むボタンは、いつも見えるように枠の外に置く)
   if (media.bgm.length > 0) {
     // 設定を変えるたびに一覧を作り直すので、スクロールの位置を引き継ぐ (音量を動かしただけで先頭に戻らないように)
@@ -1218,7 +1221,7 @@ function renderPlaylist() {
   }
   if (popupTab === 'noise') {
     const focusedNoise = noiseList.contains(document.activeElement) ? document.activeElement.dataset.file : undefined;
-    noiseList.replaceChildren(...NOISE_TYPES.map((type) => noiseItem(type, settings.bgm === `noise:${type}`)));
+    noiseList.replaceChildren(...SYNTH_TYPES.map((type) => noiseItem(type, settings.bgm === `noise:${type}`)));
     if (focusedNoise) noiseList.querySelector(`[data-file="${CSS.escape(focusedNoise)}"]`)?.focus();
     return;
   }

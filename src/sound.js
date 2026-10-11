@@ -1,6 +1,7 @@
 // 音の再生 (画面側)。アラーム・SE は Web Audio API でその場で音を作り、
 // BGM はノイズ (noise.js で生成) か、取り込んだ音声ファイルをループ再生する。
 import { generateNoise } from './noise.js';
+import { AMBIENT_TYPES, AMBIENT_SECONDS, generateAmbience } from './ambience.js';
 import { alarmNotes } from './alarms.js';
 import { seNotes } from './se-sounds.js';
 
@@ -142,7 +143,10 @@ export class BgmPlayer {
   #startNoise(type) {
     const ctx = context();
     if (!this.#noiseBuffers.has(type)) {
-      const samples = generateNoise(type, ctx.sampleRate * NOISE_SECONDS);
+      // 環境音 (雨・波など) は 30 秒、ノイズは 10 秒を作ってくり返す
+      const samples = AMBIENT_TYPES.includes(type)
+        ? generateAmbience(type, ctx.sampleRate, AMBIENT_SECONDS)
+        : generateNoise(type, ctx.sampleRate * NOISE_SECONDS);
       const buffer = ctx.createBuffer(1, samples.length, ctx.sampleRate);
       buffer.copyToChannel(samples, 0);
       this.#noiseBuffers.set(type, buffer);
