@@ -1,6 +1,6 @@
 {
   "name": "kugiri-timer",
-  "version": "2.8.0",
+  "version": "2.9.0",
   "description": "Kugiri Timer: Electron で作る、作業と休憩を区切るタイマー",
   "license": "MIT",
   "type": "module",
